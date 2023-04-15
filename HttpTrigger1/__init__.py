@@ -94,8 +94,10 @@ def recommandation_generator(pca_tranformed_embedding_df, articles,  df, user_id
     logging.info('------------debut cosinus traitement')
     cosine_sim2 = cosine_similarity(df_user_merged, arts_embedd_acp)
     logging.info('------------fin cosinus traitement')
+    logging.info('------------debut  traitement1')
     titles = table_user["article_id"]
-    indices = pd.Series(range(0,8), index=titles)
+    indices = pd.Series(range(0,len(table_user["article_id"])), index=titles)
+    logging.info('------------debut  traitement1')
     return user_reco(user_id, indices, cosine_sim2, all_clicks_df_sav)
 
 
