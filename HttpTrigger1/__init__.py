@@ -43,7 +43,7 @@ def user_reco(user_id, indices, cosine_sim2, data):
     json_result = []
     for item in sim_scores:
         json_result.append({"article_id_recommandé":item[0], "score_cosine_de_similarité":str(item[1])})
-    logging.info('------------fin  traitement6'+str(json_result))
+    logging.info('------------fin  traitement6'+str(sim_scores))
     return json_result
 
 def transform_to_dataframecsv(blob):
@@ -116,30 +116,24 @@ def main(req: func.HttpRequest, dfpcablob: func.InputStream, dfartblob: func.Inp
     logging.info('Python HTTP trigger function processed a request.')
     logging.info('------------debut fichier acp')
     pca_tranformed_embedding_df = transform_to_dataframecsv(dfpcablob) # acp.csv
-    logging.info('------------fin fichier acp')
+    logging.info('------------fin fichier acp'+str(len(pca_tranformed_embedding_df)))
     logging.info('------------debut fichier art')
     articles = transform_to_dataframecsv(dfartblob)#articles_metadata.csv
-    logging.info('------------fin fichier art')
+    logging.info('------------fin fichier art'+str(len(articles)))
     logging.info('------------debut fichier df')
     df = transform_to_dataframecsv(dfblob)  # df_clicks.csv
-    logging.info('------------fin fichier df')
-    name = req.params.get('user_id')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('user_id')
+    logging.info('------------fin fichier df'+str(len(df)))
+    req_body_bytes = req.get_body()
+    req_body = req_body_bytes.decode("utf-8")
+    json_body = json.loads(req_body)
+    name = None
+    name = json_body['user_id']
 
-    if name:
-        func.HttpResponse.charset = 'utf-8'
-        return func.HttpResponse(
-                json.dumps(recommandation_generator(pca_tranformed_embedding_df, articles,  df,name)),
-                status_code=200
-                )
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+    name = req.params.get('user_id')
+
+    func.HttpResponse.charset = 'utf-8'
+    logging.info('------------variable name'+str(name))
+    return func.HttpResponse(
+            json.dumps(recommandation_generator(pca_tranformed_embedding_df, articles,  df,name)),
+            status_code=200
+            )
