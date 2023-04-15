@@ -33,7 +33,10 @@ def user_reco(user_id, indices, cosine_sim2, data):
         reco.append(article_recommande[0]) # Dans le tableau reco les articles les plus similaires y sont ajoutés
     sim_scores = sorted(reco, key=lambda x: x[1], reverse=True) # trie les articles de facon a ce que le plus recommandé soit présent dans les 5 articles les plus recommandé
     sim_scores = sim_scores[1:6] # Récupère les 5 articles les plus recommmandé
-    return json.dumps(sim_scores)
+    json_result = []
+    for item in sim_scores:
+        json_result.append({"article_id_recommandé":item[0], "score_cosine_de_similarité":str(item[1])})
+    return json_result
 
 def transform_to_dataframecsv(blob):
     dfs = bytearray(blob.read())
@@ -122,8 +125,11 @@ def main(req: func.HttpRequest, dfpcablob: func.InputStream, dfartblob: func.Inp
             name = req_body.get('user_id')
 
     if name:
-        return func.HttpResponse(recommandation_generator(pca_tranformed_embedding_df, articles,  df,name),
-                status_code=200)
+        func.HttpResponse.charset = 'utf-8'
+        return func.HttpResponse(
+                json.dumps(recommandation_generator(pca_tranformed_embedding_df, articles,  df,name)),
+                status_code=200
+                )
     else:
         return func.HttpResponse(
              "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
