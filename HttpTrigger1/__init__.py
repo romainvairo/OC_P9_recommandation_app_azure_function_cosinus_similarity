@@ -116,21 +116,21 @@ def main(req: func.HttpRequest, dfpcablob: func.InputStream, dfartblob: func.Inp
     logging.info('Python HTTP trigger function processed a request.')
     logging.info('------------debut fichier acp')
     pca_tranformed_embedding_df = transform_to_dataframecsv(dfpcablob) # acp.csv
-    logging.info('------------fin fichier acp'+str(len(pca_tranformed_embedding_df)))
+    logging.info('------------fin fichier acp')
     logging.info('------------debut fichier art')
     articles = transform_to_dataframecsv(dfartblob)#articles_metadata.csv
-    logging.info('------------fin fichier art'+str(len(articles)))
+    logging.info('------------fin fichier art')
     logging.info('------------debut fichier df')
     df = transform_to_dataframecsv(dfblob)  # df_clicks.csv
-    logging.info('------------fin fichier df'+str(len(df)))
+    logging.info('------------fin fichier df')
+    logging.info('------------get variable debut')
     req_body_bytes = req.get_body()
     req_body = req_body_bytes.decode("utf-8")
     json_body = json.loads(req_body)
     name = None
     name = json_body['user_id']
-
+    logging.info('------------recupere variable ok')
     func.HttpResponse.charset = 'utf-8'
-    logging.info('------------variable name'+str(name))
     name = int(name)
     return func.HttpResponse(
             json.dumps(recommandation_generator(pca_tranformed_embedding_df, articles,  df,name)),
