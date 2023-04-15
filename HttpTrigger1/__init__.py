@@ -26,16 +26,24 @@ def articles_reco(article_id, indices, cosine_sim2):
     return sim_scores
 
 def user_reco(user_id, indices, cosine_sim2, data):
+    logging.info('------------debut  traitement3')
     reco = [] # Création d'un tableau vide 
     articles_du_user_clickes = user_articles_clickes(data, user_id) # Récupération des articles qui ont été cliquers par un certain utilisateur
+    logging.info('------------fin  traitement3')
+    logging.info('------------debut  traitement4')
     for art in list(articles_du_user_clickes["article_id"]): # Boucle sur les articles qui ont été cliqué par cet utilisateur
         article_recommande = articles_reco(art, indices, cosine_sim2) # Cette fonction récupère les articles les plus similaires
         reco.append(article_recommande[0]) # Dans le tableau reco les articles les plus similaires y sont ajoutés
+    logging.info('------------fin  traitement4')
+    logging.info('------------debut  traitement5')
     sim_scores = sorted(reco, key=lambda x: x[1], reverse=True) # trie les articles de facon a ce que le plus recommandé soit présent dans les 5 articles les plus recommandé
     sim_scores = sim_scores[1:6] # Récupère les 5 articles les plus recommmandé
+    logging.info('------------fin  traitement5')
+    logging.info('------------debut  traitement6')
     json_result = []
     for item in sim_scores:
         json_result.append({"article_id_recommandé":item[0], "score_cosine_de_similarité":str(item[1])})
+    logging.info('------------fin  traitement6'+str(json_result))
     return json_result
 
 def transform_to_dataframecsv(blob):
@@ -100,7 +108,7 @@ def recommandation_generator(pca_tranformed_embedding_df, articles,  df, user_id
     logging.info('------------debut  traitement1')
     titles = table_user["article_id"]
     indices = pd.Series(range(0,len(table_user["article_id"])), index=titles)
-    logging.info('------------debut  traitement1')
+    logging.info('------------fin  traitement1')
     return user_reco(user_id, indices, cosine_sim2, all_clicks_df_sav)
 
 
