@@ -43,7 +43,7 @@ def user_reco(user_id, indices, cosine_sim2, data):
     json_result = []
     for item in sim_scores:
         json_result.append({"article_id_recommandé":item[0], "score_cosine_de_similarité":str(item[1])})
-    logging.info('------------fin  traitement6'+str(sim_scores))
+    logging.info('------------fin  traitement6'+str(json_result))
     return json_result
 
 def transform_to_dataframecsv(blob):
@@ -129,10 +129,9 @@ def main(req: func.HttpRequest, dfpcablob: func.InputStream, dfartblob: func.Inp
     name = None
     name = json_body['user_id']
 
-    name = req.params.get('user_id')
-
     func.HttpResponse.charset = 'utf-8'
     logging.info('------------variable name'+str(name))
+    name = int(name)
     return func.HttpResponse(
             json.dumps(recommandation_generator(pca_tranformed_embedding_df, articles,  df,name)),
             status_code=200
