@@ -2,7 +2,7 @@
   "scriptFile": "__init__.py",
   "bindings": [
     {
-      "authLevel": "function",
+      "authLevel": "anonymous",
       "type": "httpTrigger",
       "direction": "in",
       "name": "req",
@@ -10,6 +10,27 @@
         "get",
         "post"
       ]
+    },
+    {
+      "type": "blob",
+      "direction":"in",
+      "name": "dfpcablob",
+      "path": "files/acp.csv",
+      "connection": "storageacc_STORAGE"
+    },
+    {
+      "type": "blob",
+      "direction":"in",
+      "name": "dfartblob",
+      "path": "files/articles_metadata.csv",
+      "connection": "storageacc_STORAGE"
+    },
+    {
+      "type": "blob",
+      "direction":"in",
+      "name": "dfblob",
+      "path": "files/df_clicks.csv",
+      "connection": "storageacc_STORAGE"
     },
     {
       "type": "http",
