@@ -90,10 +90,12 @@ def recommandation_generator(pca_tranformed_embedding_df, articles,  df, user_id
 
     # La jointure est faite sur les articles qui ont étés cliqués au moins une fois et sur l'embedding réduit par l'ACP, la jointure se fait sur l'index
     df_arts_embedd_acp = df_articles_click_au_moins_une_fois.join(pca_tranformed_embedding_df, how='left', on='index', lsuffix="_1")
-
-    arts_embedd_acp = df_arts_embedd_acp.iloc[:, 3:]
-
+    
     table_user = (user_articles_clickes(all_clicks_df_sav, 0)).reset_index()
+
+    # suppression des articles déjà cliqués par le user
+    df_arts_embedd_acp_filt = df_arts_embedd_acp[~df_arts_embedd_acp.article_id.isin(table_user.article_id)]
+    arts_embedd_acp = df_arts_embedd_acp_filt.iloc[:, 3:]
 
     table_user = table_user[["user_id", "index", "article_id"]]
 
